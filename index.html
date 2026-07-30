@@ -6,30 +6,128 @@
     <title>Priority Word Meanings in Elementary Education</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; line-height: 1.6; color: #333; }
-        h1, h2 { color: #2c3e50; }
-        .container { max-width: 1400px; margin: auto; }
-        .section { background: #f9f9f9; padding: 20px; border-radius: 8px; margin-bottom: 30px; border: 1px solid #ddd; }
-        input, button, select { padding: 10px; margin: 5px 0; border: 1px solid #ccc; border-radius: 4px; }
-        button { background-color: #3498db; color: white; cursor: pointer; border: none; font-weight: bold; }
-        button:hover { background-color: #2980b9; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; font-size: 0.9em; }
-        th { background-color: #2c3e50; color: white; position: sticky; top: 0; z-index: 10; }
-        #filterRow th { background-color: #ecf0f1; }
-        .ai-result { background: #e8f4f8; padding: 15px; margin-top: 15px; border-radius: 5px; white-space: pre-wrap; font-family: monospace; }
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 20px; 
+            line-height: 1.6; 
+            color: #333; 
+        }
+
+        h1, h2 { 
+            color: #2c3e50; 
+        }
+
+        .container { 
+            max-width: 1400px; 
+            margin: auto; 
+        }
+
+        .section { 
+            background: #f9f9f9; 
+            padding: 20px; 
+            border-radius: 8px; 
+            margin-bottom: 30px; 
+            border: 1px solid #ddd; 
+        }
+
+        input, button, select { 
+            padding: 10px; 
+            margin: 5px 0; 
+            border: 1px solid #ccc; 
+            border-radius: 4px; 
+        }
+
+        button { 
+            background-color: #3498db; 
+            color: white; 
+            cursor: pointer; 
+            border: none; 
+            font-weight: bold; 
+        }
+
+        button:hover { 
+            background-color: #2980b9; 
+        }
+
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin-top: 10px; 
+        }
+
+        th, td { 
+            border: 1px solid #ddd; 
+            padding: 8px; 
+            text-align: left; 
+            font-size: 0.9em; 
+        }
+
+        th { 
+            background-color: #2c3e50; 
+            color: white; 
+            position: sticky; 
+            top: 0; 
+            z-index: 10; 
+        }
+
+        #filterRow th { 
+            background-color: #ecf0f1; 
+        }
+
+        .ai-result { 
+            background: #e8f4f8; 
+            padding: 15px; 
+            margin-top: 15px; 
+            border-radius: 5px; 
+            white-space: pre-wrap; 
+            font-family: monospace; 
+        }
+
+        .model-note {
+            background: #fff3cd;
+            border: 1px solid #ffeeba;
+            color: #5f4b00;
+            padding: 12px 15px;
+            border-radius: 5px;
+            margin: 10px 0 15px 0;
+            font-size: 0.95em;
+        }
+
+        .model-note strong {
+            color: #4a3a00;
+        }
     </style>
 </head>
+
 <body>
 <div class="container">
+
     <h1>Priority Word Meanings in Elementary Education</h1>
-    <p>Explore the Words Worth Teaching (WWT) database classifications. This table is filtered to show only <strong>Verbally-defined (V1 & V2) meanings</strong>, which are highly recommended for direct classroom instruction. This work is based on Biemiller, A. (2010). Words worth teaching: Closing the vocabulary gap. Columbus, OH: SRA/McGraw-Hill. 
-</p>
+
+    <p>
+        Explore the Words Worth Teaching (WWT) database classifications. This table is filtered to show only 
+        <strong>Verbally-defined (V1 &amp; V2) meanings</strong>, which are highly recommended for direct classroom instruction. 
+        This work is based on Biemiller, A. (2010). <em>Words worth teaching: Closing the vocabulary gap</em>. 
+        Columbus, OH: SRA/McGraw-Hill.
+    </p>
 
     <!-- AI Classification Section -->
     <div class="section">
         <h2>Live AI Word Classifier</h2>
-        <p>Enter a word and its meaning to classify it using the developmental P/V framework.</p>
+
+        <p>
+            Enter a word and its meaning to classify it using the developmental P/V framework.
+        </p>
+
+        <div class="model-note">
+            <strong>Important note about the live classifier:</strong>
+            The classifications reported in the paper and shown in the database were produced using the higher-powered 
+            Grok model pipeline used in the study. The live classifier below uses a smaller free embedded LLM so users 
+            can experiment with the developmental P/V framework interactively. Because this live model is less powerful 
+            than the model used for the research classifications, its results should be treated as exploratory and may 
+            not exactly match the official study classifications. For research, curriculum design, or instructional 
+            planning, please rely on the classifications in the database table below.
+        </div>
 
         <input type="text" id="aiWord" placeholder="Enter Target Word (e.g., calculate)" style="width: 300px;"><br>
         <input type="text" id="aiMeaning" placeholder="Enter Meaning (e.g., to find a number using math)" style="width: 500px;"><br>
@@ -41,6 +139,7 @@
     <!-- Database Viewer Section -->
     <div class="section">
         <h2>WWT Vocabulary Database (V-Meanings Only)</h2>
+
         <input type="text" id="searchInput" placeholder="Search for a word or meaning..." style="width: 100%; max-width: 400px;">
 
         <div style="overflow-x:auto; height: 600px;">
@@ -52,7 +151,7 @@
                         <th>AI Classification</th>
                         <th>AI Comment</th>
                         <th>WWT Priority</th>
-                        <th>AoA (Brysbaert & Biemiller 2017)</th>
+                        <th>AoA (Brysbaert &amp; Biemiller 2017)</th>
                         <th>LWV Grade Level</th>
                         <th>LWV Pct Correct</th>
                     </tr>
@@ -63,17 +162,21 @@
             </table>
         </div>
     </div>
+
 </div>
 
 <script>
 // ========== FULL CLASSIFICATION PROMPT ==========
 const CLASSIFICATION_PROMPT = `You are an expert in cognitive development and vocabulary classification.
+
 You are given a dataset with two columns:
 - WORD: a single word or multi-word expression (the target word).
 - MEANING: a short definition or paraphrase.
+
 Your task is to classify each target word into one of the following categories based on its MEANING.
 
 ### PERCEPTUAL / PROCEDURAL MEANINGS (P)
+
 **P1 — Concrete entities, substances, events, sounds, places, organisms**
 - Use for things directly recognizable through perception in ordinary physical experience.
 - Includes: concrete objects (chair), animals/plants (dog), natural substances (water), body parts (hand), natural places (river), observable people/social beings (mother), directly perceivable events (thunder).
@@ -99,6 +202,7 @@ Your task is to classify each target word into one of the following categories b
 - Use for grammatical function words and relational operators.
 
 ### VERBALLY-DEFINED MEANINGS (V)
+
 **V1 — Verbally/institutionally defined entities, concepts, states, units, roles**
 - Use for nouns/adjectives/states that cannot be understood by direct perception alone and depend on language, convention, law, measurement, or abstract categories.
 - Includes: units (inch, dollar), time systems (annual, decade), institutions (law, court), roles (doctor, judge), abstract states (taxable, democratic).
@@ -110,10 +214,13 @@ Your task is to classify each target word into one of the following categories b
 - Core test: Does performing the action correctly require symbolic rules, language, institutional rules, or culturally taught procedures?
 
 ### UNCLEAR (U)
+
 **U — Unclear:** Use when a word-meaning pair cannot be categorized.
 
 ---
+
 ### TIE-BREAK RULES (CRITICAL)
+
 1. Classify by the MEANING given, not by the word alone. The MEANING is decisive.
 2. Direct bodily movement with an observable physical result = P2.
 3. Actions requiring language, symbols, numbers, rules, laws, or institutions = V2.
@@ -122,11 +229,14 @@ Your task is to classify each target word into one of the following categories b
 6. Do NOT classify all verbs as P2. Do NOT classify all nouns as P1.
 
 ### KNOWLEDGE BASE
+
 Case, R. (1998). The development of conceptual structures.
 Carey, S. (2009). The origin of concepts.
 
 ---
+
 ### EXAMPLES
+
 INPUT:
 ROW_ID WORD MEANING
 101 apple a round fruit with red or green skin
@@ -142,14 +252,18 @@ ROW_ID CLASSIFICATION COMMENT
 104 P2 Direct bodily movement with observable physical result.
 
 ---
+
 ### CRITICAL OUTPUT INSTRUCTIONS
+
 1) Do not omit any row.
 2) Do not add extra rows.
 3) Copy ROW_ID exactly.
 4) Use the COMMENT column to briefly state which Core Test or Tie-Break rule applies.
 5) Return ONLY raw TSV format. No markdown blocks, no conversational text.
+
 Header must be exactly:
 ROW_ID\tCLASSIFICATION\tCOMMENT`;
+
 
 // ========== AI CLASSIFICATION FUNCTION (via Cloudflare Worker) ==========
 async function classifyWord() {
@@ -192,11 +306,13 @@ async function classifyWord() {
         } else {
             resultDiv.innerHTML = "Unexpected response from the model.";
         }
+
     } catch (error) {
         resultDiv.innerHTML = `<strong style="color:red;">Network Error:</strong> ${error.message}`;
         console.error(error);
     }
 }
+
 
 // ========== PAPAPARSE + EXCEL-LIKE DROPDOWN FILTERS ==========
 document.addEventListener("DOMContentLoaded", function() {
@@ -204,18 +320,24 @@ document.addEventListener("DOMContentLoaded", function() {
         download: true,
         header: true,
         skipEmptyLines: true,
-        transformHeader: function(header) { return header.trim(); },
+        transformHeader: function(header) { 
+            return header.trim(); 
+        },
         complete: function(results) {
             const data = results.data;
             const tbody = document.getElementById("tableBody");
             tbody.innerHTML = "";
+
             let vMeaningCount = 0;
 
             data.forEach(row => {
                 if (row.WWT_WORD && (row.AI_CLASSIFICATION === "V1" || row.AI_CLASSIFICATION === "V2")) {
                     vMeaningCount++;
+
                     const aoaValue = row['AoAtestbased_Brysbaert_&_Biemiller_2017'] || row['AoAtestbased_B_&_B_2017'] || "";
+
                     const tr = document.createElement("tr");
+
                     tr.innerHTML = `
                         <td><strong>${row.WWT_WORD}</strong></td>
                         <td>${row.WWT_MEANING || ""}</td>
@@ -226,6 +348,7 @@ document.addEventListener("DOMContentLoaded", function() {
                         <td>${row['LWV Grade Level_original'] || ""}</td>
                         <td>${row['LWV Pct Correct'] || ""}</td>
                     `;
+
                     tbody.appendChild(tr);
                 }
             });
@@ -242,6 +365,7 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 });
 
+
 function buildDropdownFilters() {
     const table = document.getElementById("dataTable");
     const tbody = document.getElementById("tableBody");
@@ -249,14 +373,17 @@ function buildDropdownFilters() {
     const headerRow = table.querySelector("thead tr");
 
     let filterRow = document.getElementById("filterRow");
+
     if (!filterRow) {
         filterRow = document.createElement("tr");
         filterRow.id = "filterRow";
         table.querySelector("thead").appendChild(filterRow);
     }
+
     filterRow.innerHTML = "";
 
     const colCount = headerRow.cells.length;
+
     for (let i = 0; i < colCount; i++) {
         const th = document.createElement("th");
         th.style.backgroundColor = "#ecf0f1";
@@ -267,6 +394,7 @@ function buildDropdownFilters() {
         select.innerHTML = `<option value="">All</option>`;
 
         const uniqueValues = new Set();
+
         rows.forEach(row => {
             const cell = row.cells[i];
             if (cell) uniqueValues.add(cell.innerText.trim());
@@ -284,10 +412,12 @@ function buildDropdownFilters() {
             });
 
         select.addEventListener("change", applyAllFilters);
+
         th.appendChild(select);
         filterRow.appendChild(th);
     }
 }
+
 
 function applyAllFilters() {
     const tbody = document.getElementById("tableBody");
@@ -300,8 +430,10 @@ function applyAllFilters() {
 
         selects.forEach((select, index) => {
             const filterValue = select.value.toLowerCase();
+
             if (filterValue !== "") {
                 const cellText = row.cells[index]?.innerText.toLowerCase().trim() || "";
+
                 if (cellText !== filterValue) {
                     showRow = false;
                 }
@@ -310,6 +442,7 @@ function applyAllFilters() {
 
         if (showRow && globalSearch !== "") {
             const rowText = row.innerText.toLowerCase();
+
             if (!rowText.includes(globalSearch)) {
                 showRow = false;
             }
@@ -319,7 +452,9 @@ function applyAllFilters() {
     });
 }
 
+
 document.getElementById("searchInput").addEventListener("keyup", applyAllFilters);
 </script>
+
 </body>
 </html>
