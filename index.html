@@ -119,16 +119,11 @@
             Enter a word and its meaning to classify it using the developmental P/V framework.
         </p>
 
-        <div class="model-note">
-            <strong>Important note about the live classifier:</strong>
-            The classifications reported in the paper and shown in the database were produced using the higher-powered 
-            Grok model pipeline used in the study. The live classifier below uses a smaller free embedded LLM so users 
-            can experiment with the developmental P/V framework interactively. Because this live model is less powerful 
-            than the model used for the research classifications, its results should be treated as exploratory and may 
-            not exactly match the official study classifications. For research, curriculum design, or instructional 
-            planning, please rely on the classifications in the database table below.
-        </div>
-
+<div class="model-note">
+    <strong>About this AI classifier:</strong>
+    The classifications reported in the paper and displayed in the database below were produced using the paid Grok model pipeline. This live AI tool in the webpage uses the free NVIDIA Nemotron 3 Ultra 550B A55B model through OpenRouter. It is given the P/V framework prompt 
+    'behind the scenes' for you each time a word and meaning pair is submitted. It may be useful for exploring words not listed below, but do bear in mind the paid frontier models tend to perform better than free AI models, so use critical judgement of course on any AI outputs!   
+</div>
         <input type="text" id="aiWord" placeholder="Enter Target Word (e.g., calculate)" style="width: 300px;"><br>
         <input type="text" id="aiMeaning" placeholder="Enter Meaning (e.g., to find a number using math)" style="width: 500px;"><br>
         <button onclick="classifyWord()">Classify Word</button>
