@@ -174,7 +174,7 @@
         This webpage presents a refined set of word-meaning pairs from Biemiller’s
         <em>Words Worth Teaching</em> database. The study used AI to classify WWT meanings according to a
         developmental P/V framework grounded in developmental cognitive science, including work on conceptual
-        development and children’s developing conceptual structures [1].
+        development and children’s developing conceptual structures.
 
         <br><br>
 
@@ -182,7 +182,7 @@
         that may be especially worth considering for <strong>direct vocabulary instruction</strong>. The database
         below is filtered to show <strong>V1</strong> and <strong>V2</strong> meanings. These are not simply
         “hard words.” They are meanings whose acquisition depends on language, convention, symbolic systems,
-        institutions, formal categories, or rule-governed reasoning [1].
+        institutions, formal categories, or rule-governed reasoning.
 
         <br><br>
 
@@ -193,32 +193,29 @@
                 <strong>V1: Verbally or institutionally defined entities, concepts, states, units, roles, and categories.</strong>
                 This category is used for meanings that cannot be understood through direct perception alone and depend on
                 language, social convention, law, measurement, institutions, symbolic categories, or abstract conceptual systems.
-                Examples may include meanings involving roles, rules, units, institutions, grammatical categories, legal ideas,
-                time systems, or abstract states.
             </li>
 
             <li>
                 <strong>V2: Symbolic, linguistic, institutional, formal, or rule-governed procedures and actions.</strong>
                 This category is used for meanings referring to actions or procedures that require language, symbols, formal
-                rules, calculation, institutional conventions, or culturally taught procedures. Examples may include meanings
-                involving defining, calculating, voting, scoring, proving, translating, judging, or other rule-governed actions.
+                rules, calculation, institutional conventions, or culturally taught procedures.
             </li>
         </ul>
 
         The refined pool is intended as a practical starting point. It does <strong>not</strong> represent all vocabulary
         children need to learn. Rather, it identifies a theoretically motivated subset of WWT word meanings that may be
         more likely to require explicit teaching than meanings children can often learn through direct experience,
-        demonstration, or incidental exposure [1].
+        demonstration, or incidental exposure.
 
         <div class="key-box">
             <strong>WWT priority key:</strong>
             <ul>
-                <li><code>E</code> = <strong>Easy</strong>: known by more than 80% of children at Grade 4, and also by a sample of Grade 2 children.</li>
+                <li><code>E</code> = <strong>Easy</strong></li>
                 <li><code>T2</code> = <strong>Teach in the primary grades</strong>.</li>
-                <li><code>L2</code> = <strong>Low priority in the primary grades</strong>: in the statistical range for priority but not judged important.</li>
+                <li><code>L2</code> = <strong>Low priority in the primary grades</strong>.</li>
                 <li><code>T6</code> = <strong>Teach in the upper elementary grades</strong>.</li>
-                <li><code>L6</code> = <strong>Low priority in upper elementary grades</strong>: in the statistical range for priority but not judged important.</li>
-                <li><code>D</code> = <strong>Difficult</strong>: known by fewer than 40% of children at the end of Grade 6; may be more appropriate for Grades 7 or 8.</li>
+                <li><code>L6</code> = <strong>Low priority in upper elementary grades</strong>.</li>
+                <li><code>D</code> = <strong>Difficult</strong>: may be more appropriate for Grades 7+.</li>
             </ul>
         </div>
     </div>
@@ -621,7 +618,13 @@ function applyAllFilters() {
     updateRowCount(visibleCount, cachedRows.length);
 }
 
-
+#rowCount {
+    display: inline-block;
+    margin-left: 10px;
+    color: #1f4e79;
+    font-weight: bold;
+    font-size: 0.95em;
+}
 // ========== ROW COUNT ==========
 function updateRowCount(visible, total) {
     const rowCount = document.getElementById("rowCount");
