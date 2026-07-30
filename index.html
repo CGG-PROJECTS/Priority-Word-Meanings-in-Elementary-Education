@@ -9,7 +9,7 @@
     <style>
         body { font-family: Arial, sans-serif; margin: 20px; line-height: 1.6; color: #333; }
         h1, h2 { color: #2c3e50; }
-        .container { max-width: 1200px; margin: auto; }
+        .container { max-width: 1400px; margin: auto; }
         .section { background: #f9f9f9; padding: 20px; border-radius: 8px; margin-bottom: 30px; border: 1px solid #ddd; }
         input, button { padding: 10px; margin: 5px 0; border: 1px solid #ccc; border-radius: 4px; }
         button { background-color: #3498db; color: white; cursor: pointer; border: none; }
@@ -25,15 +25,15 @@
 
 <div class="container">
     <h1>Priority Word Meanings in Elementary Education</h1>
-    <p>Explore the Words Worth Teaching (WWT) database classifications based on the theoretical distinction between Perceptual/Procedural (P) meanings and Verbally-defined (V) meanings.</p>
+    <p>Explore the Words Worth Teaching (WWT) database classifications. This table is filtered to show only <strong>Verbally-defined (V1 & V2) meanings</strong>, which are highly recommended for direct classroom instruction.</p>
 
     <!-- AI Classification Section -->
     <div class="section">
         <h2>Live AI Word Classifier</h2>
         <p>Enter a word and its meaning to classify it using the developmental prompt framework.</p>
-        <p id="warning">Note: To make this function work live on GitHub Pages, you must enter a valid OpenAI API key below. Do not leave your API key in public source code permanently.</p>
+        <p id="warning">Note: To use a free open-source model, you can get a free API key from <a href="https://console.groq.com/" target="_blank">Groq</a> and use it below.</p>
         
-        <input type="password" id="apiKey" placeholder="Enter OpenAI API Key (sk-...)" style="width: 300px;"><br>
+        <input type="password" id="apiKey" placeholder="Enter API Key" style="width: 300px;"><br>
         <input type="text" id="aiWord" placeholder="Enter Target Word (e.g., calculate)" style="width: 300px;"><br>
         <input type="text" id="aiMeaning" placeholder="Enter Meaning (e.g., to find a number using math)" style="width: 500px;"><br>
         <button onclick="classifyWord()">Classify Word</button>
@@ -43,7 +43,7 @@
 
     <!-- Database Viewer Section -->
     <div class="section">
-        <h2>WWT Vocabulary Database</h2>
+        <h2>WWT Vocabulary Database (V-Meanings Only)</h2>
         <input type="text" id="searchInput" placeholder="Search for a word or meaning..." style="width: 100%; max-width: 400px;" onkeyup="filterTable()">
         
         <div style="overflow-x:auto; height: 600px;">
@@ -55,11 +55,13 @@
                         <th>AI Classification</th>
                         <th>AI Comment</th>
                         <th>WWT Priority</th>
+                        <th>AoA (Brysbaert & Biemiller 2017)</th>
                         <th>LWV Grade Level</th>
+                        <th>LWV Pct Correct</th>
                     </tr>
                 </thead>
                 <tbody id="tableBody">
-                    <tr><td colspan="6">Loading CSV data...</td></tr>
+                    <tr><td colspan="8">Loading CSV data...</td></tr>
                 </tbody>
             </table>
         </div>
@@ -78,8 +80,12 @@
                 const tbody = document.getElementById("tableBody");
                 tbody.innerHTML = ""; // Clear loading message
 
+                let vMeaningCount = 0;
+
                 data.forEach(row => {
-                    if (row.WWT_WORD) {
+                    // FILTER: Only show rows where AI_CLASSIFICATION is V1 or V2
+                    if (row.WWT_WORD && (row.AI_CLASSIFICATION === "V1" || row.AI_CLASSIFICATION === "V2")) {
+                        vMeaningCount++;
                         const tr = document.createElement("tr");
                         tr.innerHTML = `
                             <td><strong>${row.WWT_WORD}</strong></td>
@@ -87,19 +93,25 @@
                             <td><strong>${row.AI_CLASSIFICATION || ""}</strong></td>
                             <td>${row.AI_COMMENT || ""}</td>
                             <td>${row['WWT PRIORITY'] || ""}</td>
+                            <td>${row['AoAtestbased_Brysbaert_&_Biemiller_2017'] || ""}</td>
                             <td>${row['LWV Grade Level_original'] || ""}</td>
+                            <td>${row['LWV Pct Correct'] || ""}</td>
                         `;
                         tbody.appendChild(tr);
                     }
                 });
+
+                if (vMeaningCount === 0) {
+                    tbody.innerHTML = `<tr><td colspan="8">No V1 or V2 words found in the CSV.</td></tr>`;
+                }
             },
             error: function(err) {
-                document.getElementById("tableBody").innerHTML = `<tr><td colspan="6">Error loading CSV: ${err.message}. Make sure FINAL_Words.csv is uploaded to GitHub.</td></tr>`;
+                document.getElementById("tableBody").innerHTML = `<tr><td colspan="8">Error loading CSV: ${err.message}. Make sure FINAL_Words.csv is uploaded to GitHub.</td></tr>`;
             }
         });
     });
 
-    // 2. Filter Table Function
+    // 2. Filter Table Function (for the search bar)
     function filterTable() {
         const input = document.getElementById("searchInput").value.toLowerCase();
         const tr = document.getElementById("dataTable").getElementsByTagName("tr");
@@ -180,7 +192,7 @@ ROW_ID\tCLASSIFICATION\tCOMMENT`;
         const userPrompt = `ROW_ID\tWORD\tMEANING\n1\t${word}\t${meaning}`;
 
         try {
-            // Using OpenAI API as standard (you can adapt endpoint if using Grok directly)
+            // Note: URL defaults to OpenAI. To use the free Groq API, change it to: https://api.groq.com/openai/v1/chat/completions
             const response = await fetch('https://api.openai.com/v1/chat/completions', {
                 method: 'POST',
                 headers: {
@@ -188,7 +200,7 @@ ROW_ID\tCLASSIFICATION\tCOMMENT`;
                     'Authorization': `Bearer ${apiKey}`
                 },
                 body: JSON.stringify({
-                    model: 'gpt-4o', // Adjust model name as needed
+                    model: 'gpt-4o', // Change to 'llama3-8b-8192' if using Groq
                     temperature: 0.0,
                     messages: [
                         { role: 'system', content: systemPrompt },
