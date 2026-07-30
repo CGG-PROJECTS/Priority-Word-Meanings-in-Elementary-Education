@@ -105,25 +105,52 @@
     <h1>Priority Word Meanings in Elementary Education</h1>
 
     <p>
-        Explore the Words Worth Teaching (WWT) database classifications. This table is filtered to show only 
-        <strong>Verbally-defined (V1 &amp; V2) meanings</strong>, which are highly recommended for direct classroom instruction. 
-        This work is based on Biemiller, A. (2010). <em>Words worth teaching: Closing the vocabulary gap</em>. 
+        Explore the Words Worth Teaching (WWT) database classifications. This table is filtered to show only
+        <strong>Verbally-defined (V1 &amp; V2) meanings</strong>, which are highly recommended for direct classroom instruction.
+        This work is based on Biemiller, A. (2010). <em>Words worth teaching: Closing the vocabulary gap</em>.
         Columbus, OH: SRA/McGraw-Hill.
     </p>
+
+    <div class="about-page">
+        <strong>About this page:</strong>
+        This webpage presents a refined set of word-meaning pairs from Biemiller’s 
+        <em>Words Worth Teaching</em> database. The study used AI to classify WWT meanings according to a 
+        developmental P/V framework: 
+        <strong>P-meanings</strong> are grounded in perception, physical action, bodily or affective states, 
+        perceptual qualities, or grammatical function, while <strong>V-meanings</strong> depend more on 
+        language, social convention, institutions, symbolic systems, or formal rules.
+
+        <br><br>
+
+        The table below is filtered to show <strong>V1 and V2 meanings</strong>. These are meanings that may be 
+        especially important for direct vocabulary instruction because children are less likely to acquire them 
+        reliably through everyday experience or brief contextual exposure alone. Examples include meanings tied to 
+        measurement, grammar, law, institutions, academic procedures, symbolic systems, or rule-governed actions.
+
+        <br><br>
+
+        This refined pool is intended as a practical starting point for teachers, researchers, and curriculum 
+        designers. It does <strong>not</strong> represent all vocabulary children need to learn. Rather, it identifies 
+        a theoretically motivated subset of WWT word meanings that may be especially worth considering for explicit 
+        instruction.
+    </div>
 
     <!-- AI Classification Section -->
     <div class="section">
         <h2>Live AI Word Classifier</h2>
-
         <p>
             Enter a word and its meaning to classify it using the developmental P/V framework.
         </p>
 
-<div class="model-note">
-    <strong>About this AI classifier:</strong>
-    The classifications reported in the paper and displayed in the database below were produced using the paid Grok model pipeline. This live AI tool in the webpage uses the free NVIDIA Nemotron 3 Ultra 550B A55B model through OpenRouter. It is given the P/V framework prompt 
-    'behind the scenes' for you each time a word and meaning pair is submitted. It may be useful for exploring words not listed below, but do bear in mind the paid frontier models tend to perform better than free AI models, so use critical judgement of course on any AI outputs!   
-</div>
+        <div class="model-note">
+            <strong>About this AI classifier:</strong>
+            The classifications reported in the paper and displayed in the database below were produced using the paid 
+            Grok model pipeline used in the study. This live AI tool uses the free NVIDIA Nemotron 3 Ultra 550B A55B 
+            model through OpenRouter. Each time a word and meaning pair is submitted, the model is given the P/V framework 
+            prompt behind the scenes and returns a provisional classification. It may be useful for exploring words not 
+            listed below, but paid frontier models tend to perform better than free AI models. Please use critical judgment 
+            when evaluating any AI output.
+        </div>
         <input type="text" id="aiWord" placeholder="Enter Target Word (e.g., calculate)" style="width: 300px;"><br>
         <input type="text" id="aiMeaning" placeholder="Enter Meaning (e.g., to find a number using math)" style="width: 500px;"><br>
         <button onclick="classifyWord()">Classify Word</button>
