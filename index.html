@@ -137,6 +137,23 @@
         .model-note strong {
             color: #4a3a00;
         }
+
+        .search-tools {
+            margin-bottom: 8px;
+        }
+
+        #rowCount {
+            display: inline-block;
+            margin-left: 10px;
+            color: #555;
+            font-size: 0.9em;
+        }
+
+        .small-note {
+            color: #666;
+            font-size: 0.9em;
+            margin-top: 4px;
+        }
     </style>
 </head>
 
@@ -196,24 +213,12 @@
         <div class="key-box">
             <strong>WWT priority key:</strong>
             <ul>
-                <li>
-                    <code>E</code> = <strong>Easy</strong>: known by more than 80% of children at Grade 4, and also by a sample of Grade 2 children.
-                </li>
-                <li>
-                    <code>T2</code> = <strong>Teach in the primary grades</strong>.
-                </li>
-                <li>
-                    <code>L2</code> = <strong>Low priority in the primary grades</strong>: in the statistical range for priority but not judged important.
-                </li>
-                <li>
-                    <code>T6</code> = <strong>Teach in the upper elementary grades</strong>.
-                </li>
-                <li>
-                    <code>L6</code> = <strong>Low priority in upper elementary grades</strong>: in the statistical range for priority but not judged important.
-                </li>
-                <li>
-                    <code>D</code> = <strong>Difficult</strong>: known by fewer than 40% of children at the end of Grade 6; may be more appropriate for Grades 7 or 8.
-                </li>
+                <li><code>E</code> = <strong>Easy</strong>: known by more than 80% of children at Grade 4, and also by a sample of Grade 2 children.</li>
+                <li><code>T2</code> = <strong>Teach in the primary grades</strong>.</li>
+                <li><code>L2</code> = <strong>Low priority in the primary grades</strong>: in the statistical range for priority but not judged important.</li>
+                <li><code>T6</code> = <strong>Teach in the upper elementary grades</strong>.</li>
+                <li><code>L6</code> = <strong>Low priority in upper elementary grades</strong>: in the statistical range for priority but not judged important.</li>
+                <li><code>D</code> = <strong>Difficult</strong>: known by fewer than 40% of children at the end of Grade 6; may be more appropriate for Grades 7 or 8.</li>
             </ul>
         </div>
     </div>
@@ -247,7 +252,13 @@
     <div class="section">
         <h2>WWT Vocabulary Database (V-Meanings Only)</h2>
 
-        <input type="text" id="searchInput" placeholder="Search for a word or meaning..." style="width: 100%; max-width: 400px;">
+        <div class="search-tools">
+            <input type="text" id="searchInput" placeholder="Search for a word or meaning..." style="width: 100%; max-width: 400px;">
+            <span id="rowCount"></span>
+            <div class="small-note">
+                Search is filtered live. Dropdown filters can also be used for exact column filtering.
+            </div>
+        </div>
 
         <div style="overflow-x:auto; height: 600px;">
             <table id="dataTable">
@@ -372,6 +383,11 @@ Header must be exactly:
 ROW_ID\tCLASSIFICATION\tCOMMENT`;
 
 
+// ========== GLOBAL TABLE CACHE FOR FAST FILTERING ==========
+let cachedRows = [];
+let searchTimer = null;
+
+
 // ========== BASIC HTML ESCAPE FUNCTION ==========
 function escapeHTML(value) {
     if (value === null || value === undefined) return "";
@@ -384,7 +400,7 @@ function escapeHTML(value) {
 }
 
 
-// ========== AI CLASSIFICATION FUNCTION (via Cloudflare Worker) ==========
+// ========== AI CLASSIFICATION FUNCTION ==========
 async function classifyWord() {
     const word = document.getElementById("aiWord").value.trim();
     const meaning = document.getElementById("aiMeaning").value.trim();
@@ -433,7 +449,7 @@ async function classifyWord() {
 }
 
 
-// ========== PAPAPARSE + EXCEL-LIKE DROPDOWN FILTERS ==========
+// ========== LOAD CSV ==========
 document.addEventListener("DOMContentLoaded", function() {
     Papa.parse("FINAL_Words.csv", {
         download: true,
@@ -447,7 +463,11 @@ document.addEventListener("DOMContentLoaded", function() {
             const tbody = document.getElementById("tableBody");
             tbody.innerHTML = "";
 
+            cachedRows = [];
+
             let vMeaningCount = 0;
+
+            const fragment = document.createDocumentFragment();
 
             data.forEach(row => {
                 if (row.WWT_WORD && (row.AI_CLASSIFICATION === "V1" || row.AI_CLASSIFICATION === "V2")) {
@@ -455,40 +475,66 @@ document.addEventListener("DOMContentLoaded", function() {
 
                     const aoaValue = row['AoAtestbased_Brysbaert_&_Biemiller_2017'] || row['AoAtestbased_B_&_B_2017'] || "";
 
+                    const cells = [
+                        row.WWT_WORD || "",
+                        row.WWT_MEANING || "",
+                        row.AI_CLASSIFICATION || "",
+                        row.AI_COMMENT || "",
+                        row['WWT PRIORITY'] || "",
+                        aoaValue || "",
+                        row['LWV Grade Level_original'] || "",
+                        row['LWV Pct Correct'] || ""
+                    ];
+
                     const tr = document.createElement("tr");
 
                     tr.innerHTML = `
-                        <td><strong>${escapeHTML(row.WWT_WORD)}</strong></td>
-                        <td>${escapeHTML(row.WWT_MEANING || "")}</td>
-                        <td><strong>${escapeHTML(row.AI_CLASSIFICATION || "")}</strong></td>
-                        <td>${escapeHTML(row.AI_COMMENT || "")}</td>
-                        <td>${escapeHTML(row['WWT PRIORITY'] || "")}</td>
-                        <td>${escapeHTML(aoaValue)}</td>
-                        <td>${escapeHTML(row['LWV Grade Level_original'] || "")}</td>
-                        <td>${escapeHTML(row['LWV Pct Correct'] || "")}</td>
+                        <td><strong>${escapeHTML(cells[0])}</strong></td>
+                        <td>${escapeHTML(cells[1])}</td>
+                        <td><strong>${escapeHTML(cells[2])}</strong></td>
+                        <td>${escapeHTML(cells[3])}</td>
+                        <td>${escapeHTML(cells[4])}</td>
+                        <td>${escapeHTML(cells[5])}</td>
+                        <td>${escapeHTML(cells[6])}</td>
+                        <td>${escapeHTML(cells[7])}</td>
                     `;
 
-                    tbody.appendChild(tr);
+                    fragment.appendChild(tr);
+
+                    cachedRows.push({
+                        tr: tr,
+                        cellsLower: cells.map(value => String(value).toLowerCase().trim()),
+                        rowTextLower: cells.join(" ").toLowerCase()
+                    });
                 }
             });
 
             if (vMeaningCount === 0) {
                 tbody.innerHTML = `<tr><td colspan="8">No V1 or V2 words found.</td></tr>`;
+                updateRowCount(0, 0);
             } else {
+                tbody.appendChild(fragment);
                 buildDropdownFilters();
+                updateRowCount(cachedRows.length, cachedRows.length);
             }
         },
         error: function(err) {
             document.getElementById("tableBody").innerHTML = `<tr><td colspan="8">Error loading CSV: ${escapeHTML(err.message)}</td></tr>`;
         }
     });
+
+    const searchInput = document.getElementById("searchInput");
+
+    searchInput.addEventListener("input", function() {
+        clearTimeout(searchTimer);
+        searchTimer = setTimeout(applyAllFilters, 180);
+    });
 });
 
 
+// ========== BUILD DROPDOWN FILTERS ==========
 function buildDropdownFilters() {
     const table = document.getElementById("dataTable");
-    const tbody = document.getElementById("tableBody");
-    const rows = Array.from(tbody.getElementsByTagName("tr"));
     const headerRow = table.querySelector("thead tr");
 
     let filterRow = document.getElementById("filterRow");
@@ -514,9 +560,9 @@ function buildDropdownFilters() {
 
         const uniqueValues = new Set();
 
-        rows.forEach(row => {
-            const cell = row.cells[i];
-            if (cell) uniqueValues.add(cell.innerText.trim());
+        cachedRows.forEach(item => {
+            const value = item.cellsLower[i] || "";
+            if (value) uniqueValues.add(value);
         });
 
         Array.from(uniqueValues)
@@ -525,7 +571,7 @@ function buildDropdownFilters() {
                 if (val) {
                     const opt = document.createElement("option");
                     opt.value = val;
-                    opt.textContent = val;
+                    opt.textContent = val.length > 80 ? val.substring(0, 80) + "..." : val;
                     select.appendChild(opt);
                 }
             });
@@ -538,41 +584,51 @@ function buildDropdownFilters() {
 }
 
 
+// ========== FAST FILTERING ==========
 function applyAllFilters() {
-    const tbody = document.getElementById("tableBody");
-    const rows = Array.from(tbody.getElementsByTagName("tr"));
     const selects = document.querySelectorAll("#filterRow select");
-    const globalSearch = document.getElementById("searchInput").value.toLowerCase();
+    const globalSearch = document.getElementById("searchInput").value.toLowerCase().trim();
 
-    rows.forEach(row => {
+    const selectedFilters = Array.from(selects).map(select => select.value.toLowerCase().trim());
+
+    let visibleCount = 0;
+
+    cachedRows.forEach(item => {
         let showRow = true;
 
-        selects.forEach((select, index) => {
-            const filterValue = select.value.toLowerCase();
+        for (let i = 0; i < selectedFilters.length; i++) {
+            const filterValue = selectedFilters[i];
 
             if (filterValue !== "") {
-                const cellText = row.cells[index]?.innerText.toLowerCase().trim() || "";
-
-                if (cellText !== filterValue) {
+                if (item.cellsLower[i] !== filterValue) {
                     showRow = false;
+                    break;
                 }
             }
-        });
+        }
 
         if (showRow && globalSearch !== "") {
-            const rowText = row.innerText.toLowerCase();
-
-            if (!rowText.includes(globalSearch)) {
+            if (!item.rowTextLower.includes(globalSearch)) {
                 showRow = false;
             }
         }
 
-        row.style.display = showRow ? "" : "none";
+        item.tr.style.display = showRow ? "" : "none";
+
+        if (showRow) visibleCount++;
     });
+
+    updateRowCount(visibleCount, cachedRows.length);
 }
 
 
-document.getElementById("searchInput").addEventListener("keyup", applyAllFilters);
+// ========== ROW COUNT ==========
+function updateRowCount(visible, total) {
+    const rowCount = document.getElementById("rowCount");
+    if (rowCount) {
+        rowCount.textContent = `${visible.toLocaleString()} of ${total.toLocaleString()} rows shown`;
+    }
+}
 </script>
 
 </body>
