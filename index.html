@@ -9,9 +9,10 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 20px;
+            margin: 16px;
             line-height: 1.6;
             color: #333;
+            background: #ffffff;
         }
 
         h1, h2, h3 {
@@ -19,13 +20,13 @@
         }
 
         .container {
-            max-width: 1400px;
+            max-width: 98vw;
             margin: auto;
         }
 
         .section {
             background: #f9f9f9;
-            padding: 20px;
+            padding: 22px;
             border-radius: 8px;
             margin-bottom: 30px;
             border: 1px solid #ddd;
@@ -35,7 +36,7 @@
             background: #eef7ff;
             border: 1px solid #b8dcf5;
             color: #2c3e50;
-            padding: 18px 20px;
+            padding: 18px 22px;
             border-radius: 6px;
             margin: 15px 0 25px 0;
             font-size: 0.98em;
@@ -76,6 +77,7 @@
             margin: 5px 0;
             border: 1px solid #ccc;
             border-radius: 4px;
+            box-sizing: border-box;
         }
 
         button {
@@ -90,10 +92,30 @@
             background-color: #2980b9;
         }
 
+        .wide-input {
+            width: 100%;
+            max-width: 760px;
+        }
+
+        .word-input {
+            width: 100%;
+            max-width: 420px;
+        }
+
+        .table-wrap {
+            overflow-x: auto;
+            overflow-y: auto;
+            height: 720px;
+            border: 1px solid #ddd;
+            background: white;
+        }
+
         table {
             width: 100%;
+            min-width: 1650px;
             border-collapse: collapse;
-            margin-top: 10px;
+            margin-top: 0;
+            table-layout: fixed;
         }
 
         th, td {
@@ -101,6 +123,7 @@
             padding: 8px;
             text-align: left;
             font-size: 0.9em;
+            vertical-align: top;
         }
 
         th {
@@ -108,11 +131,51 @@
             color: white;
             position: sticky;
             top: 0;
-            z-index: 10;
+            z-index: 20;
         }
 
         #filterRow th {
             background-color: #ecf0f1;
+            position: sticky;
+            top: 42px;
+            z-index: 19;
+        }
+
+        #filterRow select {
+            width: 100%;
+            padding: 6px;
+        }
+
+        .col-word {
+            width: 150px;
+        }
+
+        .col-meaning {
+            width: 330px;
+        }
+
+        .col-class {
+            width: 120px;
+        }
+
+        .col-comment {
+            width: 500px;
+        }
+
+        .col-priority {
+            width: 110px;
+        }
+
+        .col-aoa {
+            width: 150px;
+        }
+
+        .col-lwv-grade {
+            width: 130px;
+        }
+
+        .col-lwv-pct {
+            width: 130px;
         }
 
         .ai-result {
@@ -139,20 +202,53 @@
         }
 
         .search-tools {
-            margin-bottom: 8px;
+            margin-bottom: 12px;
+        }
+
+        #searchInput {
+            width: 100%;
+            max-width: 700px;
+            font-size: 1em;
         }
 
         #rowCount {
             display: inline-block;
-            margin-left: 10px;
-            color: #555;
-            font-size: 0.9em;
+            margin-left: 12px;
+            color: #1f4e79;
+            font-weight: bold;
+            font-size: 0.95em;
         }
 
         .small-note {
             color: #666;
             font-size: 0.9em;
             margin-top: 4px;
+        }
+
+        .no-filter-label {
+            color: #555;
+            font-size: 0.85em;
+            font-weight: normal;
+        }
+
+        @media (max-width: 900px) {
+            body {
+                margin: 10px;
+            }
+
+            .section {
+                padding: 14px;
+            }
+
+            #rowCount {
+                display: block;
+                margin-left: 0;
+                margin-top: 4px;
+            }
+
+            .table-wrap {
+                height: 620px;
+            }
         }
     </style>
 </head>
@@ -164,7 +260,7 @@
 
     <p>
         Explore the Words Worth Teaching (WWT) database classifications. This table is filtered to show only
-        <strong>Verbally-based (V1 &amp; V2) meanings</strong>, which are especially relevant for direct classroom instruction.
+        <strong>verbally-based (V1 &amp; V2) meanings</strong>, which are especially relevant for direct classroom instruction.
         This work is based on Biemiller, A. (2010). <em>Words worth teaching: Closing the vocabulary gap</em>.
         Columbus, OH: SRA/McGraw-Hill.
     </p>
@@ -174,7 +270,7 @@
         This webpage presents a refined set of word-meaning pairs from Biemiller’s
         <em>Words Worth Teaching</em> database. The study used AI to classify WWT meanings according to a
         developmental P/V framework grounded in developmental cognitive science, including work on conceptual
-        development and children’s developing conceptual structures.
+        development and children’s developing conceptual structures [1].
 
         <br><br>
 
@@ -182,7 +278,7 @@
         that may be especially worth considering for <strong>direct vocabulary instruction</strong>. The database
         below is filtered to show <strong>V1</strong> and <strong>V2</strong> meanings. These are not simply
         “hard words.” They are meanings whose acquisition depends on language, convention, symbolic systems,
-        institutions, formal categories, or rule-governed reasoning.
+        institutions, formal categories, or rule-governed reasoning [1].
 
         <br><br>
 
@@ -202,20 +298,20 @@
             </li>
         </ul>
 
-        The refined pool is intended as a practical starting point. It does <strong>not</strong> represent all vocabulary
+        This refined pool is intended as a practical starting point. It does <strong>not</strong> represent all vocabulary
         children need to learn. Rather, it identifies a theoretically motivated subset of WWT word meanings that may be
         more likely to require explicit teaching than meanings children can often learn through direct experience,
-        demonstration, or incidental exposure.
+        demonstration, or incidental exposure [1].
 
         <div class="key-box">
             <strong>WWT priority key:</strong>
             <ul>
-                <li><code>E</code> = <strong>Easy</strong></li>
+                <li><code>E</code> = <strong>Easy</strong>: known by more than 80% of children at Grade 4, and also by a sample of Grade 2 children.</li>
                 <li><code>T2</code> = <strong>Teach in the primary grades</strong>.</li>
-                <li><code>L2</code> = <strong>Low priority in the primary grades</strong>.</li>
+                <li><code>L2</code> = <strong>Low priority in the primary grades</strong>: in the statistical range for priority but not judged important.</li>
                 <li><code>T6</code> = <strong>Teach in the upper elementary grades</strong>.</li>
-                <li><code>L6</code> = <strong>Low priority in upper elementary grades</strong>.</li>
-                <li><code>D</code> = <strong>Difficult</strong>: may be more appropriate for Grades 7+.</li>
+                <li><code>L6</code> = <strong>Low priority in upper elementary grades</strong>: in the statistical range for priority but not judged important.</li>
+                <li><code>D</code> = <strong>Difficult</strong>: known by fewer than 40% of children at the end of Grade 6; may be more appropriate for Grades 7 or 8.</li>
             </ul>
         </div>
     </div>
@@ -238,8 +334,8 @@
             when evaluating any AI output.
         </div>
 
-        <input type="text" id="aiWord" placeholder="Enter Target Word (e.g., calculate)" style="width: 300px;"><br>
-        <input type="text" id="aiMeaning" placeholder="Enter Meaning (e.g., to find a number using math)" style="width: 500px;"><br>
+        <input type="text" id="aiWord" class="word-input" placeholder="Enter Target Word (e.g., calculate)"><br>
+        <input type="text" id="aiMeaning" class="wide-input" placeholder="Enter Meaning (e.g., to find a number using math)"><br>
         <button onclick="classifyWord()">Classify Word</button>
 
         <div id="aiResult" class="ai-result" style="display:none;"></div>
@@ -250,25 +346,25 @@
         <h2>WWT Vocabulary Database (V-Meanings Only)</h2>
 
         <div class="search-tools">
-            <input type="text" id="searchInput" placeholder="Search for a word or meaning..." style="width: 100%; max-width: 400px;">
+            <input type="text" id="searchInput" placeholder="Search for a word, meaning, comment, priority, AoA, or LWV value...">
             <span id="rowCount"></span>
             <div class="small-note">
-                Search is filtered live. Dropdown filters can also be used for exact column filtering.
+                Search updates after a short pause while typing. Dropdown filters are provided for the shorter/categorical columns.
             </div>
         </div>
 
-        <div style="overflow-x:auto; height: 600px;">
+        <div class="table-wrap">
             <table id="dataTable">
                 <thead>
                     <tr>
-                        <th>Word</th>
-                        <th>Meaning</th>
-                        <th>AI Classification</th>
-                        <th>AI Comment</th>
-                        <th>WWT Priority</th>
-                        <th>AoA (Brysbaert &amp; Biemiller 2017)</th>
-                        <th>LWV Grade Level</th>
-                        <th>LWV Pct Correct</th>
+                        <th class="col-word">Word</th>
+                        <th class="col-meaning">Meaning</th>
+                        <th class="col-class">AI Classification</th>
+                        <th class="col-comment">AI Comment</th>
+                        <th class="col-priority">WWT Priority</th>
+                        <th class="col-aoa">AoA</th>
+                        <th class="col-lwv-grade">LWV Grade Level</th>
+                        <th class="col-lwv-pct">LWV Pct Correct</th>
                     </tr>
                 </thead>
                 <tbody id="tableBody">
@@ -458,12 +554,11 @@ document.addEventListener("DOMContentLoaded", function() {
         complete: function(results) {
             const data = results.data;
             const tbody = document.getElementById("tableBody");
-            tbody.innerHTML = "";
 
+            tbody.innerHTML = "";
             cachedRows = [];
 
             let vMeaningCount = 0;
-
             const fragment = document.createDocumentFragment();
 
             data.forEach(row => {
@@ -524,15 +619,16 @@ document.addEventListener("DOMContentLoaded", function() {
 
     searchInput.addEventListener("input", function() {
         clearTimeout(searchTimer);
-        searchTimer = setTimeout(applyAllFilters, 180);
+        searchTimer = setTimeout(applyAllFilters, 200);
     });
 });
 
 
 // ========== BUILD DROPDOWN FILTERS ==========
+// To keep the page fast, dropdowns are only created for short/categorical columns.
+// Word, Meaning, and AI Comment should be searched using the search box.
 function buildDropdownFilters() {
     const table = document.getElementById("dataTable");
-    const headerRow = table.querySelector("thead tr");
 
     let filterRow = document.getElementById("filterRow");
 
@@ -544,15 +640,18 @@ function buildDropdownFilters() {
 
     filterRow.innerHTML = "";
 
-    const colCount = headerRow.cells.length;
+    const filterableColumns = new Set([2, 4, 5, 6, 7]);
 
-    for (let i = 0; i < colCount; i++) {
+    for (let i = 0; i < 8; i++) {
         const th = document.createElement("th");
-        th.style.backgroundColor = "#ecf0f1";
+
+        if (!filterableColumns.has(i)) {
+            th.innerHTML = `<span class="no-filter-label">Use search box</span>`;
+            filterRow.appendChild(th);
+            continue;
+        }
 
         const select = document.createElement("select");
-        select.style.width = "100%";
-        select.style.padding = "5px";
         select.innerHTML = `<option value="">All</option>`;
 
         const uniqueValues = new Set();
@@ -565,12 +664,10 @@ function buildDropdownFilters() {
         Array.from(uniqueValues)
             .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }))
             .forEach(val => {
-                if (val) {
-                    const opt = document.createElement("option");
-                    opt.value = val;
-                    opt.textContent = val.length > 80 ? val.substring(0, 80) + "..." : val;
-                    select.appendChild(opt);
-                }
+                const opt = document.createElement("option");
+                opt.value = val;
+                opt.textContent = val;
+                select.appendChild(opt);
             });
 
         select.addEventListener("change", applyAllFilters);
@@ -586,21 +683,26 @@ function applyAllFilters() {
     const selects = document.querySelectorAll("#filterRow select");
     const globalSearch = document.getElementById("searchInput").value.toLowerCase().trim();
 
-    const selectedFilters = Array.from(selects).map(select => select.value.toLowerCase().trim());
+    const selectedFilters = [];
+
+    selects.forEach(select => {
+        const th = select.closest("th");
+        const index = Array.from(th.parentNode.children).indexOf(th);
+        selectedFilters.push({
+            index: index,
+            value: select.value.toLowerCase().trim()
+        });
+    });
 
     let visibleCount = 0;
 
     cachedRows.forEach(item => {
         let showRow = true;
 
-        for (let i = 0; i < selectedFilters.length; i++) {
-            const filterValue = selectedFilters[i];
-
-            if (filterValue !== "") {
-                if (item.cellsLower[i] !== filterValue) {
-                    showRow = false;
-                    break;
-                }
+        for (const filter of selectedFilters) {
+            if (filter.value !== "" && item.cellsLower[filter.index] !== filter.value) {
+                showRow = false;
+                break;
             }
         }
 
@@ -612,23 +714,30 @@ function applyAllFilters() {
 
         item.tr.style.display = showRow ? "" : "none";
 
-        if (showRow) visibleCount++;
+        if (showRow) {
+            visibleCount++;
+        }
     });
 
     updateRowCount(visibleCount, cachedRows.length);
 }
 
-#rowCount {
-    display: inline-block;
-    margin-left: 10px;
-    color: #1f4e79;
-    font-weight: bold;
-    font-size: 0.95em;
-}
+
 // ========== ROW COUNT ==========
 function updateRowCount(visible, total) {
     const rowCount = document.getElementById("rowCount");
-    if (rowCount) {
+    const searchText = document.getElementById("searchInput") ? document.getElementById("searchInput").value.trim() : "";
+
+    if (!rowCount) return;
+
+    if (total === 0) {
+        rowCount.textContent = "0 rows shown";
+        return;
+    }
+
+    if (searchText) {
+        rowCount.textContent = `${visible.toLocaleString()} matching rows found for "${searchText}"`;
+    } else {
         rowCount.textContent = `${visible.toLocaleString()} of ${total.toLocaleString()} rows shown`;
     }
 }
