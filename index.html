@@ -494,6 +494,7 @@ function escapeHTML(value) {
 
 
 // ========== AI CLASSIFICATION FUNCTION ==========
+// ========== AI CLASSIFICATION FUNCTION ==========
 async function classifyWord() {
     const word = document.getElementById("aiWord").value.trim();
     const meaning = document.getElementById("aiMeaning").value.trim();
@@ -526,13 +527,14 @@ async function classifyWord() {
 
         const data = await response.json();
 
-        if (data.error) {
-            resultDiv.innerHTML = `<strong style="color:red;">API Error:</strong> ${escapeHTML(data.error.message || JSON.stringify(data.error))}`;
-        } else if (data.choices && data.choices.length > 0) {
+        if (!response.ok || data.error) {
+            const errDetail = data.error ? (data.error.message || JSON.stringify(data.error)) : response.statusText;
+            resultDiv.innerHTML = `<strong style="color:red;">API Error (${response.status}):</strong> ${escapeHTML(errDetail)}`;
+        } else if (data.choices && data.choices.length > 0 && data.choices[0].message) {
             const content = data.choices[0].message.content;
             resultDiv.innerHTML = `<strong>Classification Result:</strong><br><pre style="margin:0;">${escapeHTML(content)}</pre>`;
         } else {
-            resultDiv.innerHTML = "Unexpected response from the model.";
+            resultDiv.innerHTML = `<strong>Unexpected Response Format:</strong><br><pre>${escapeHTML(JSON.stringify(data, null, 2))}</pre>`;
         }
 
     } catch (error) {
@@ -540,7 +542,6 @@ async function classifyWord() {
         console.error(error);
     }
 }
-
 
 // ========== LOAD CSV ==========
 document.addEventListener("DOMContentLoaded", function() {
