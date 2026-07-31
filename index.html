@@ -509,22 +509,20 @@ async function classifyWord() {
     resultDiv.style.display = "block";
     resultDiv.innerHTML = "Classifying... please wait.";
 
-    // Clearly structure the input so the LLM processes MEANING as the primary key
-    const userPrompt = `Classify this word based strictly on its MEANING:
+    // Force explicit reasoning on the MEANING first, then return JSON
+    const userPrompt = `Classify this word based strictly on the provided definition:
 
 Target Word: "${word}"
-Meaning: "${meaning}"
+Target Meaning: "${meaning}"
 
-Output format (TSV):
-ROW_ID\tCLASSIFICATION\tCOMMENT
-1\t[CATEGORY]\t[REASON]`;
+Instructions:
+1. Ignore other meanings of "${word}". Only evaluate: "${meaning}".
+2. Output ONLY a raw JSON object with keys "classification" (e.g. V1, V2, P1, P2) and "reasoning". Do not include markdown codeblocks.`;
 
     try {
         const response = await fetch("https://wwt-classifier.clarenceggreen.workers.dev", {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 messages: [
                     { role: "system", content: CLASSIFICATION_PROMPT },
@@ -541,25 +539,30 @@ ROW_ID\tCLASSIFICATION\tCOMMENT
         } else if (data.choices && data.choices[0] && data.choices[0].message) {
             let content = data.choices[0].message.content.trim();
             
-            // Clean up any extra header line or raw TSV format for display
-            const lines = content.split("\n").filter(line => line.trim() !== "");
-            let dataLine = lines[lines.length - 1]; // Take the result line
-            
-            const parts = dataLine.split("\t");
-            if (parts.length >= 3) {
-                const category = parts[1];
-                const comment = parts.slice(2).join("\t");
-                
-                resultDiv.innerHTML = `
-                    <div style="font-family: Arial, sans-serif; font-size: 1em;">
-                        <p style="margin: 0 0 8px 0;"><strong>Word:</strong> ${escapeHTML(word)}</p>
-                        <p style="margin: 0 0 8px 0;"><strong>Classification:</strong> <span style="background: #2c3e50; color: white; padding: 2px 8px; border-radius: 4px; font-weight: bold;">${escapeHTML(category)}</span></p>
-                        <p style="margin: 0;"><strong>Reasoning:</strong> ${escapeHTML(comment)}</p>
-                    </div>
-                `;
-            } else {
-                resultDiv.innerHTML = `<strong>Classification Result:</strong><br><pre style="margin:0;">${escapeHTML(content)}</pre>`;
+            // Clean markdown code blocks if present
+            content = content.replace(/```json/g, "").replace(/```/g, "").trim();
+
+            let category = "Unknown";
+            let reasoning = content;
+
+            try {
+                const parsed = JSON.parse(content);
+                category = parsed.classification || parsed.CLASSIFICATION || "Unknown";
+                reasoning = parsed.reasoning || parsed.COMMENT || parsed.comment || content;
+            } catch (e) {
+                // Fallback regex if JSON parsing fails
+                const catMatch = content.match(/\"classification\"\s*:\s*\"([^\"]+)\"/i);
+                if (catMatch) category = catMatch[1];
             }
+
+            resultDiv.innerHTML = `
+                <div style="font-family: Arial, sans-serif; font-size: 1em;">
+                    <p style="margin: 0 0 8px 0;"><strong>Word:</strong> ${escapeHTML(word)}</p>
+                    <p style="margin: 0 0 8px 0;"><strong>Meaning Evaluated:</strong> <em>"${escapeHTML(meaning)}"</em></p>
+                    <p style="margin: 0 0 8px 0;"><strong>Classification:</strong> <span style="background: #2c3e50; color: white; padding: 2px 8px; border-radius: 4px; font-weight: bold;">${escapeHTML(category)}</span></p>
+                    <p style="margin: 0;"><strong>Reasoning:</strong> ${escapeHTML(reasoning)}</p>
+                </div>
+            `;
         } else {
             resultDiv.innerHTML = `<strong>Unexpected Response Format:</strong><br><pre>${escapeHTML(JSON.stringify(data, null, 2))}</pre>`;
         }
