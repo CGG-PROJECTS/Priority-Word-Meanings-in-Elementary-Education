@@ -509,7 +509,15 @@ async function classifyWord() {
     resultDiv.style.display = "block";
     resultDiv.innerHTML = "Classifying... please wait.";
 
-    const userPrompt = `ROW_ID\tWORD\tMEANING\n1\t${word}\t${meaning}`;
+    // Clearly structure the input so the LLM processes MEANING as the primary key
+    const userPrompt = `Classify this word based strictly on its MEANING:
+
+Target Word: "${word}"
+Meaning: "${meaning}"
+
+Output format (TSV):
+ROW_ID\tCLASSIFICATION\tCOMMENT
+1\t[CATEGORY]\t[REASON]`;
 
     try {
         const response = await fetch("https://wwt-classifier.clarenceggreen.workers.dev", {
@@ -561,7 +569,6 @@ async function classifyWord() {
         console.error(error);
     }
 }
-
 // ========== LOAD CSV ==========
 document.addEventListener("DOMContentLoaded", function() {
     Papa.parse("FINAL_Words.csv", {
