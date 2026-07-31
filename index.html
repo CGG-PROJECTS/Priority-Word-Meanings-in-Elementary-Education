@@ -530,9 +530,28 @@ async function classifyWord() {
         if (!response.ok || data.error) {
             const errDetail = data.error ? (data.error.message || JSON.stringify(data.error)) : response.statusText;
             resultDiv.innerHTML = `<strong style="color:red;">API Error (${response.status}):</strong> ${escapeHTML(errDetail)}`;
-        } else if (data.choices && data.choices.length > 0 && data.choices[0].message) {
-            const content = data.choices[0].message.content;
-            resultDiv.innerHTML = `<strong>Classification Result:</strong><br><pre style="margin:0;">${escapeHTML(content)}</pre>`;
+        } else if (data.choices && data.choices[0] && data.choices[0].message) {
+            let content = data.choices[0].message.content.trim();
+            
+            // Clean up any extra header line or raw TSV format for display
+            const lines = content.split("\n").filter(line => line.trim() !== "");
+            let dataLine = lines[lines.length - 1]; // Take the result line
+            
+            const parts = dataLine.split("\t");
+            if (parts.length >= 3) {
+                const category = parts[1];
+                const comment = parts.slice(2).join("\t");
+                
+                resultDiv.innerHTML = `
+                    <div style="font-family: Arial, sans-serif; font-size: 1em;">
+                        <p style="margin: 0 0 8px 0;"><strong>Word:</strong> ${escapeHTML(word)}</p>
+                        <p style="margin: 0 0 8px 0;"><strong>Classification:</strong> <span style="background: #2c3e50; color: white; padding: 2px 8px; border-radius: 4px; font-weight: bold;">${escapeHTML(category)}</span></p>
+                        <p style="margin: 0;"><strong>Reasoning:</strong> ${escapeHTML(comment)}</p>
+                    </div>
+                `;
+            } else {
+                resultDiv.innerHTML = `<strong>Classification Result:</strong><br><pre style="margin:0;">${escapeHTML(content)}</pre>`;
+            }
         } else {
             resultDiv.innerHTML = `<strong>Unexpected Response Format:</strong><br><pre>${escapeHTML(JSON.stringify(data, null, 2))}</pre>`;
         }
